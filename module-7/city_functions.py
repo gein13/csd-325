@@ -1,3 +1,7 @@
+#Scott Chamberlain
+#4/30/2026
+#M7.2 Assignment
+
 def city_country(city, country, population=None, language=None):
     if population and language:
         return f"{city}, {country}, - Population: {population}, {language}"
