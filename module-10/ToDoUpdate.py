@@ -1,10 +1,24 @@
+#Scott Chamberlain
+#CSD325-T301
+#5/17/2026
+#Module 10.2 
+
 import tkinter as tk
 import tkinter.messagebox as msg
 
 class Todo(tk.Tk):
     def __init__(self, tasks=None):
         super().__init__()
+#
+        menu_bar = tk.Menu(self)
 
+        file_menu = tk.Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Exit", command=self.destroy)
+
+        menu_bar.add_cascade(label="File", menu=file_menu)
+
+        self.config(menu=menu_bar)
+#
         if not tasks:
             self.tasks = []
         else:
@@ -19,7 +33,8 @@ class Todo(tk.Tk):
 
         self.tasks_canvas.configure(yscrollcommand=self.scrollbar.set)
 
-        self.title("To-Do App v2")
+#6a. Change the Title of the window to your last name-ToDo. Ex. Sampson-ToDo
+        self.title("Chamberlain-ToDo")
         self.geometry("300x400")
 
         self.task_create = tk.Text(self.text_frame, height=3, bg="white", fg="black")
@@ -33,10 +48,18 @@ class Todo(tk.Tk):
         self.text_frame.pack(side=tk.BOTTOM, fill=tk.X)
         self.task_create.focus_set()
 
+#6d. Provide instructions in the label on how to delete a task.
         todo1 = tk.Label(self.tasks_frame, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
-        todo1.bind("<Button-1>", self.remove_task)
+        todo2 = tk.Label(self.tasks_frame, text="--- Right Click to Delete a Task ---", bg="lightgrey", fg="black", pady=10)
+
+
+        todo1.bind("<Button-1>", self.add_task)
+        todo2.bind("<Button-3>", self.add_task)
+        
 
         self.tasks.append(todo1)
+        self.tasks.append(todo2)
+        
 
         for task in self.tasks:
             task.pack(side=tk.TOP, fill=tk.X)
@@ -48,7 +71,8 @@ class Todo(tk.Tk):
         self.bind_all("<Button-5>", self.mouse_scroll)
         self.tasks_canvas.bind("<Configure>", self.task_width)
 
-        self.colour_schemes = [{"bg": "lightgrey", "fg": "black"}, {"bg": "grey", "fg": "white"}]
+#6b. Change the color of the menu items, two (2) complementary colors work best.
+        self.colour_schemes = [{"bg": "gray1", "fg": "DarkOrange1"}, {"bg": "DarkOrange2", "fg": "ghost white"}]
 
     def add_task(self, event=None):
         task_text = self.task_create.get(1.0,tk.END).strip()
@@ -58,7 +82,8 @@ class Todo(tk.Tk):
 
             self.set_task_colour(len(self.tasks), new_task)
 
-            new_task.bind("<Button-1>", self.remove_task)
+#6c. Currently, the user clicks the left mouse button to delete a task...change that to the right mouse button.
+            new_task.bind("<Button-3>", self.remove_task)
             new_task.pack(side=tk.TOP, fill=tk.X)
 
             self.tasks.append(new_task)
@@ -67,7 +92,7 @@ class Todo(tk.Tk):
 
     def remove_task(self, event):
         task = event.widget
-        if msg.askyesno("Really Delete?", "Delete " + task.cget("text") + "?"):
+        if msg.askyesno("Are you sure?", "Delete " + task.cget("text") + "?"):
             self.tasks.remove(event.widget)
             event.widget.destroy()
             self.recolour_tasks()
